@@ -1,0 +1,36 @@
+name: Build APK from Zip
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Unzip the Project
+        run: unzip -o nova-ai.zip -d AndroidProject
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Make Gradle Executable
+        run: cd AndroidProject && chmod +x ./gradlew
+
+      - name: Build APK
+        run: cd AndroidProject && ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Nova-AI-APK
+          path: AndroidProject/app/build/outputs/apk/debug/app-debug.apk
+          
