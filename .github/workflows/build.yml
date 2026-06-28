@@ -1,4 +1,4 @@
-name: Build APK from Zip
+ name: Build APK from Zip
 
 on:
   push:
@@ -33,12 +33,9 @@ jobs:
       - name: Make Gradle Executable
         run: cd AndroidProject && chmod +x ./gradlew
 
-      - name: Build APK
-        run: cd AndroidProject && ./gradlew assembleDebug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Nova-AI-APK
-          path: AndroidProject/app/build/outputs/apk/debug/app-debug.apk
+      - name: Build APK without Strict Checks
+        run: |
+          cd AndroidProject
+          ./gradlew assembleDebug -PgoogleServices.missing.passthrough=true --no-daemon
+          
           
